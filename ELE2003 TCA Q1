@@ -1,0 +1,69 @@
+#include <LiquidCrystal.h>
+
+#define RS     2
+#define E      3
+#define D4     4
+#define D5     5
+#define D6     6
+#define D7     7
+
+#define Trig   10
+#define Echo   9
+
+LiquidCrystal lcd(RS, E, D4, D5, D6, D7);
+
+float duration;
+float distance;
+
+void setup() {
+  
+	pinMode(Trig, OUTPUT);
+	pinMode(Echo, INPUT);
+
+	lcd.begin(16, 2);
+	lcd.clear();
+  
+  	Serial.begin(9600);
+
+}
+
+void loop() {
+  
+	digitalWrite(Trig, LOW);
+  	delayMicroseconds(2);
+
+	digitalWrite(Trig, HIGH);
+	delayMicroseconds(10);
+	digitalWrite(Trig, LOW);
+
+	duration = pulseIn(Echo, HIGH);
+	distance = duration * 0.034 / 2;
+  
+	if(distance > 330){
+    
+      	lcd.clear();
+    	lcd.setCursor(0, 0);
+		lcd.print("No object");
+    	lcd.setCursor(0, 1);
+		lcd.print("within range");
+    }
+  
+  	else{
+    
+  		lcd.clear();
+		lcd.setCursor(0, 0);
+		lcd.print("Distance:");
+
+		lcd.setCursor(0, 1);
+		lcd.print(distance);
+		lcd.print(" cm");
+  
+		Serial.print("Distance: ");
+    	Serial.print(distance);
+  		Serial.println(" cm");
+      
+    }
+  
+  	delay(500);
+  
+}
